@@ -43,28 +43,25 @@ app.get('/api/scrape', async (req, res) => {
 
         // Itera sobre todos os elementos que representam produtos na Amazon
         document.querySelectorAll('div.s-result-item[data-asin]').forEach(item => {
-            // Tenta extrair o título do produto de várias formas (ajuste para diferentes estruturas HTML)
-            const title = item.querySelector('h2 a span')?.textContent?.trim()
-                        || item.querySelector('h2 span')?.textContent?.trim()
-                        || item.querySelector('h2')?.textContent?.trim();
+                const linkElement = item.querySelector('h2 a');
 
-            // Pega a avaliação em estrelas
-            const stars = item.querySelector('.a-icon-alt')?.textContent?.trim();
+                const title = linkElement?.querySelector('span')?.textContent?.trim()
+                            || item.querySelector('h2 span')?.textContent?.trim()
+                            || item.querySelector('h2')?.textContent?.trim();
 
-            // Pega o número de avaliações
-            const reviews = item.querySelector('.a-size-base.s-underline-text')?.textContent?.trim();
+                const stars = item.querySelector('.a-icon-alt')?.textContent?.trim();
+                const reviews = item.querySelector('.a-size-base.s-underline-text')?.textContent?.trim();
+                const image = item.querySelector('img.s-image')?.src;
 
-            // Pega o link da imagem
-            const image = item.querySelector('img.s-image')?.src;
+                // Captura o link do produto (com base na URL parcial da Amazon)
+                const url = linkElement?.href ? `https://www.amazon.com${linkElement.href}` : null;
 
-            // Filtra itens que possuem título e imagem válidos e ignora resultados irrelevantes
-            if (title && image && !reviews?.includes('Prime Video') && !title.includes('More results') && !title.includes('Need help?')) {
-                products.push({ title, stars, reviews, image });
-            }
+                if (title && image && url && !reviews?.includes('Prime Video') && !title.includes('More results') && !title.includes('Need help?')) {
+                    products.push({ title, stars, reviews, image, url });
+                }
 
-            // Loga o item extraído para depuração
-            console.log({ title, stars, reviews, image });
-        });
+                console.log({ title, stars, reviews, image, url });
+            });
 
         // Filtra os produtos para garantir que todos os campos essenciais estejam presentes
         const resultadosFiltrados = products.filter(prod => 
