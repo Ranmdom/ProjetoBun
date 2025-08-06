@@ -4,16 +4,21 @@
     <meta charset="UTF-8" />
     <title>Amazon Scraper</title>
     <link rel="stylesheet" href="/src/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
   </head>
+  <div id="loader" style="display: none;" class="loader-container">
+  <div class="loader"></div>
+</div>
   <body>
     <div class="container">
       <h1>Amazon Scraper</h1>
       <div class="search-box">
         <input type="text" id="keyword" placeholder="Digite a palavra-chave..." />
-        <button id="searchBtn">Buscar</button>
+        <button id="searchBtn"><i class="fas fa-search"></i> Buscar</button>
       </div>
       <div id="results" class="results"></div>
+      <div id="loadMoreContainer" class="load-more-container"></div>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

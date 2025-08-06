@@ -1,6 +1,7 @@
 const searchBtn = document.getElementById('searchBtn');
 const keywordInput = document.getElementById('keyword');
 const resultsDiv = document.getElementById('results');
+const loader = document.getElementById('loader');
 
 let allProducts = [];
 let currentIndex = 0;
@@ -9,14 +10,16 @@ searchBtn.addEventListener('click', async () => {
   const keyword = keywordInput.value.trim();
   if (!keyword) return alert('Digite uma palavra-chave.');
 
-  resultsDiv.innerHTML = 'Carregando...';
+  // Mostra loader e limpa resultados
+  loader.style.display = 'flex';
+  resultsDiv.innerHTML = '';
   currentIndex = 0;
   allProducts = [];
 
   try {
     const res = await fetch(`http://localhost:3000/api/scrape?keyword=${encodeURIComponent(keyword)}`);
     allProducts = await res.json();
-    allProducts = allProducts.filter(p => 
+    allProducts = allProducts.filter(p =>
       p.title && p.stars && p.reviews && p.image &&
       typeof p.title === 'string' &&
       typeof p.stars === 'string' &&
@@ -25,7 +28,7 @@ searchBtn.addEventListener('click', async () => {
       p.image.includes('http')
     );
 
-    resultsDiv.innerHTML = '';
+    loader.style.display = 'none'; // Esconde loader
 
     if (!allProducts.length) {
       resultsDiv.innerHTML = 'Nenhum produto encontrado.';
@@ -35,6 +38,7 @@ searchBtn.addEventListener('click', async () => {
     showNextProducts();
     addLoadMoreButton();
   } catch (err) {
+    loader.style.display = 'none'; // Esconde loader
     resultsDiv.innerHTML = 'Erro ao buscar produtos.';
     console.error(err);
   }
@@ -52,14 +56,23 @@ function showNextProducts(count = 10) {
     `;
     resultsDiv.appendChild(div);
   });
+
   currentIndex += count;
+
+  // Verifica se já mostrou todos os produtos
+  if (currentIndex >= allProducts.length) {
+    const btn = document.querySelector('#loadMoreContainer button');
+    if (btn) btn.remove();
+  }
 }
 
+
 function addLoadMoreButton() {
+  const container = document.getElementById('loadMoreContainer');
+  container.innerHTML = ''; // Limpa botão anterior, se existir
+
   const btn = document.createElement('button');
   btn.textContent = 'Carregar mais';
-  btn.style.marginTop = '1rem';
-  btn.style.padding = '0.5rem 1rem';
 
   btn.addEventListener('click', () => {
     showNextProducts();
@@ -68,5 +81,6 @@ function addLoadMoreButton() {
     }
   });
 
-  resultsDiv.appendChild(btn);
+  container.appendChild(btn);
 }
+
