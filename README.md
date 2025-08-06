@@ -44,9 +44,14 @@ O keyword pode ser substituido por qualquer produto que queria achar
 
 ### FrontEnd (Vite) 
 1. Acesse a pasta do FrontEnd e inicie com o bash 
-2. Instale as dependêcnias usando: npm install 
-3. Inicie o projeto usando: npm run dev
-A interface estará disponível em: http://localhost:5173
+2. Instale as dependêcnias usando:
+    ```bash
+   npm install 
+3. Inicie o projeto usando:
+    ```bash
+   npm run dev
+A interface estará disponível em: 
+http://localhost:5173
 
 Como usar
 Digite uma palavra-chave no campo e clique em "Buscar". O frontend faz uma requisição para http://localhost:3000/api/scrape?keyword=..., e os produtos são exibidos com:
