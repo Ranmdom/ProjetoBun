@@ -16,6 +16,14 @@ searchBtn.addEventListener('click', async () => {
   try {
     const res = await fetch(`http://localhost:3000/api/scrape?keyword=${encodeURIComponent(keyword)}`);
     allProducts = await res.json();
+    allProducts = allProducts.filter(p => 
+      p.title && p.stars && p.reviews && p.image &&
+      typeof p.title === 'string' &&
+      typeof p.stars === 'string' &&
+      typeof p.reviews === 'string' &&
+      typeof p.image === 'string' &&
+      p.image.includes('http')
+    );
 
     resultsDiv.innerHTML = '';
 
